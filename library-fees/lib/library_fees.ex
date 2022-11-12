@@ -17,8 +17,8 @@ defmodule LibraryFees do
   end
 
   def days_late(planned_return_date, actual_return_datetime) do
-    diff = Date.diff(actual_return_datetime, planned_return_date)
-    if diff >= 0, do: diff, else: 0
+    Date.diff(actual_return_datetime, planned_return_date)
+    |> max(0)
   end
 
   def monday?(datetime) do
