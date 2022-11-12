@@ -1,4 +1,4 @@
-# Ecercism - Elixir Track
+# Exercism - Elixir Track
 
 These are the exercises in the Elixir track of Elixir (https://exercism.org/tracks/elixir), with my solutions.
 
