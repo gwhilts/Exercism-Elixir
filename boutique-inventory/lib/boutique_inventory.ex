@@ -12,13 +12,12 @@ defmodule BoutiqueInventory do
   end
 
   def increase_quantity(item, count) do
-    %{item | quantity_by_size: increase_values(item[:quantity_by_size], count)}
+   %{item | quantity_by_size: Map.new(item.quantity_by_size, fn {size, quantity} -> {size, quantity + count} end)}
   end
 
-  defp increase_values(map, count) do
-    Enum.reduce(map, %{}, fn({key, val}, acc) -> Map.put acc, key, val + count end)
-  end
-
+# Elixir feedback said to "Use the Enum.reduce function in the total_quantity
+# function to practice. It's the best fitting Enum function for this task."
+# I like reduce, but my solution is much simpler and clearer.
   def total_quantity(item) do
     Map.values(item[:quantity_by_size]) |> Enum.sum()
   end
