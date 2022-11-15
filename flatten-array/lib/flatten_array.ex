@@ -12,7 +12,13 @@ defmodule FlattenArray do
 
   """
 
+  # This seems too easy. Were we supposed to
+  # rewrite the implentation of List.flatten/1
+  # and/or Enum.filter/2 ???
+
   @spec flatten(list) :: list
   def flatten(list) do
+    List.flatten(list)
+    |> Enum.filter(&(&1))
   end
 end
