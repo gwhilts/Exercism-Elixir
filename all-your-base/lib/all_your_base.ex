@@ -11,14 +11,24 @@ defmodule AllYourBase do
   # conversion algorithm myself
 
   @spec convert(list, integer, integer) :: {:ok, list} | {:error, String.t()}
-  def convert(_digits, input_base, _output_base) when (input_base < 2) , do: {:error, "output base must be >= 2"}
-  def convert(_digits, _input_base, output_base) when (output_base < 2) , do: {:error, "output base must be >= 2"}
+
   def convert(digits, input_base, output_base) do
-    to_decimal(digits, input_base)
-    |> digit_list()
-    |> then(&{:ok, &1})
+    cond do
+      output_base < 2 -> {:error, "output base must be >= 2"}
+      input_base < 2 -> {:error, "input base must be >= 2"}
+      Enum.any?  digits, &( &1 < 0) -> {:error, "all digits must be >= 0 and < input base"}
+      Enum.any?  digits, &( &1 >= input_base) -> {:error, "all digits must be >= 0 and < input base"}
+      true -> {:ok, safe_convert(digits, input_base, output_base)}
+    end
   end
 
+  def safe_convert(digits, input_base, output_base) do
+    to_decimal(digits, input_base)
+    |> digit_list(output_base)
+  end
+
+  # Transform the list of digits to decimal integer
+  @spec to_decimal(list[integer()], integer()) :: integer()
   def to_decimal(digits, base) do
     {_, dec} =
       Enum.reverse(digits)
@@ -26,13 +36,29 @@ defmodule AllYourBase do
     dec
   end
 
-  def digit_to_dec(0, _, _), do: 0
-  def digit_to_dec(n, index, base) do
+  defp digit_to_dec(n, index, base) do
     n * (base ** index)
   end
 
-  def digit_list(num) do
+  # Transform the list of integers in base 10 to a list of integers in output base
+  # Note, values are still base 10ish, i.e. hex f is [15], not [0xf] or ["f"]
+  @spec digit_list(integer, integer) :: list(integer)
+  def digit_list(num, _base) do
+    # Is there a more direct way to get from 123 to [1]
     Integer.to_charlist(num) |> Enum.map( &( String.to_integer <<&1>> ) )
+  end
+
+  # How many digits are in the num when converted to base?
+  # should be able to do this with `1 + log(num, base)`, but
+  # can't figure out how to do this in Elixir/Erlang.
+  # There :math.log/1 .log10/1 and :math.log2/1, but ...
+  def highest_power(num, base, index \\ 0) do
+    IO.puts("#{base}, #{index} -> #{Integer.pow(index, base)} > #{num}")
+    if (Integer.pow(index, base) > num) do
+      index
+    else
+      highest_power(num, base, index + 1)
+    end
   end
 
 end
