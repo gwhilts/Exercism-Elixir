@@ -44,7 +44,7 @@ defmodule AllYourBase do
   # Note, values are still base 10ish, i.e. hex f is [15], not [0xf] or ["f"]
   @spec digit_list(integer, integer) :: list(integer)
   def digit_list(num, _base) do
-    # Is there a more direct way to get from 123 to [1]
+    # Is there a more direct way to get from 123 to [1, 2, 3]
     Integer.to_charlist(num) |> Enum.map( &( String.to_integer <<&1>> ) )
   end
 
@@ -53,9 +53,9 @@ defmodule AllYourBase do
   # can't figure out how to do this in Elixir/Erlang.
   # There :math.log/1 .log10/1 and :math.log2/1, but ...
   def highest_power(num, base, index \\ 0) do
-    IO.puts("#{base}, #{index} -> #{Integer.pow(index, base)} > #{num}")
-    if (Integer.pow(index, base) > num) do
-      index
+    IO.puts("#{base}, #{index} -> #{Integer.pow(base, index)} > #{num}")
+    if (Integer.pow(base, index) > num) do
+      index - 1
     else
       highest_power(num, base, index + 1)
     end
