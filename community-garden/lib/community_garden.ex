@@ -5,20 +5,24 @@ defmodule Plot do
 end
 
 defmodule CommunityGarden do
-  def start(opts \\ []) do
-    Agent.start(fn() -> [] end)
+  def start(_opts \\ []) do
+    Agent.start(fn() -> %{next_id: 1, plots: [] } end)
   end
-
   def list_registrations(pid) do
-    # Please implement the list_registrations/1 function
+    Agent.get pid, &Map.get(&1, :plots)
   end
 
   def register(pid, register_to) do
-    # Please implement the register/2 function
+    id = Agent.get pid, &Map.get(&1, :next_id)
+    plot = %Plot{plot_id: id, registered_to: register_to}
+    Agent.update(pid, &( %{&1 | plots: [plot | &1[:plots]], next_id: id + 1}))
+    plot
   end
 
   def release(pid, plot_id) do
-    # Please implement the release/2 function
+    Agent.get_and_update(pid,
+      fn(data) -> Map.pop(data[:plots], plot_id) end
+    )
   end
 
   def get_registration(pid, plot_id) do
