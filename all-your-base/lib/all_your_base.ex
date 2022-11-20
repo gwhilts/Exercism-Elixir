@@ -10,8 +10,9 @@ defmodule AllYourBase do
   # `List.to_integer(charlist, base)` and to implement the base
   # conversion algorithm myself
 
+  # Given the number and complexity of the rules, it seemed cleaner to use
+  # a cond, rather than muptiple fn defs with guards
   @spec convert(list, integer, integer) :: {:ok, list} | {:error, String.t()}
-
   def convert(digits, input_base, output_base) do
     cond do
       output_base < 2 -> {:error, "output base must be >= 2"}
@@ -23,42 +24,23 @@ defmodule AllYourBase do
   end
 
   def safe_convert(digits, input_base, output_base) do
-    to_decimal(digits, input_base)
-    |> digit_list(output_base)
+    digits
+    |> add_indexes() # feels like there should be something like List.each_with_index out there somewhere, but I couldn't find it
+    |> to_decimal(input_base)
+    |> to_digits(output_base)
   end
 
-  # Transform the list of digits to decimal integer
-  @spec to_decimal(list[integer()], integer()) :: integer()
-  def to_decimal(digits, base) do
-    {_, dec} =
-      Enum.reverse(digits)
-      |> Enum.reduce({0, 0}, fn n, {index, sum} -> { index + 1, sum + digit_to_dec(n, index, base)} end)
-    dec
-  end
+  # add indexes to this of digits:
+  # [1, 0, 1] -> [{1, 2}, {0, 1}, {1, 0}]
+  defp add_indexes(digits), do: Enum.zip(digits, (length(digits) - 1)..0)
 
-  defp digit_to_dec(n, index, base) do
-    n * (base ** index)
-  end
+  # transform the indexed list of digits from input base to decimal:
+  # [{1, 2}, {0, 1}, {1, 0}], 2 -> (1 * 2^2) + (0 * 2^1) + (1 * 2^0) -> 9
+  defp to_decimal(indexed_list, base), do: Enum.reduce(indexed_list, 0, fn({digit, index}, sum) -> sum + digit * (base**index) end)
 
-  # Transform the list of integers in base 10 to a list of integers in output base
-  # Note, values are still base 10ish, i.e. hex f is [15], not [0xf] or ["f"]
-  @spec digit_list(integer, integer) :: list(integer)
-  def digit_list(num, _base) do
-    # Is there a more direct way to get from 123 to [1, 2, 3]
-    Integer.to_charlist(num) |> Enum.map( &( String.to_integer <<&1>> ) )
-  end
-
-  # How many digits are in the num when converted to base?
-  # should be able to do this with `1 + log(num, base)`, but
-  # can't figure out how to do this in Elixir/Erlang.
-  # There :math.log/1 .log10/1 and :math.log2/1, but ...
-  def highest_power(num, base, index \\ 0) do
-    IO.puts("#{base}, #{index} -> #{Integer.pow(base, index)} > #{num}")
-    if (Integer.pow(base, index) > num) do
-      index - 1
-    else
-      highest_power(num, base, index + 1)
-    end
-  end
-
+  # transform a decimal number to a list of digits in the output base:
+  # 9, 2 -> [1, 0, 1]
+  defp to_digits(num, base, digits \\ [])
+  defp to_digits(0, _base, digits), do: if Enum.empty?(digits), do: [0], else: digits
+  defp to_digits(num, base, digits), do: to_digits(div(num, base), base, [rem(num, base) | digits])
 end

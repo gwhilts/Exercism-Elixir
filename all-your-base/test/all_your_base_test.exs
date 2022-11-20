@@ -9,7 +9,6 @@ defmodule AllYourBaseTest do
     assert AllYourBase.convert([1, 0, 1], 2, 10) == {:ok, [5]}
   end
 
-  @tag :pending
   test "convert single decimal to binary" do
     assert AllYourBase.convert([5], 10, 2) == {:ok, [1, 0, 1]}
   end
@@ -18,22 +17,18 @@ defmodule AllYourBaseTest do
     assert AllYourBase.convert([1, 0, 1, 0, 1, 0], 2, 10) == {:ok, [4, 2]}
   end
 
-  @tag :pending
   test "convert decimal to binary" do
     assert AllYourBase.convert([4, 2], 10, 2) == {:ok, [1, 0, 1, 0, 1, 0]}
   end
 
-  @tag :pending
   test "convert trinary to hexadecimal" do
     assert AllYourBase.convert([1, 1, 2, 0], 3, 16) == {:ok, [2, 10]}
   end
 
-  @tag :pending
   test "convert hexadecimal to trinary" do
     assert AllYourBase.convert([2, 10], 16, 3) == {:ok, [1, 1, 2, 0]}
   end
 
-  @tag :pending
   test "convert 15-bit integer" do
     assert AllYourBase.convert([3, 46, 60], 97, 73) == {:ok, [6, 10, 45]}
   end
