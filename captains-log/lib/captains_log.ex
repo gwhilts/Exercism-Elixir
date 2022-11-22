@@ -14,6 +14,7 @@ defmodule CaptainsLog do
   end
 
   def format_stardate(stardate) do
-    :erlang.float_to_binary(stardate, [{:decimals, 1}])
+    # :erlang.float_to_binary(stardate, [{:decimals, 1}]) # I like this one better, but E doesn't
+    :io_lib.format("~.1f", [stardate]) |> to_string
   end
 end
