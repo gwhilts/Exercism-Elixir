@@ -1,6 +1,7 @@
 defmodule RPNCalculatorInspection do
   def start_reliability_check(calculator, input) do
-    # Please implement the start_reliability_check/2 function
+    pid = spawn_link(fn -> input |> calculator.() end)
+    %{input: input, pid: pid}
   end
 
   def await_reliability_check_result(%{pid: pid, input: input}, results) do
