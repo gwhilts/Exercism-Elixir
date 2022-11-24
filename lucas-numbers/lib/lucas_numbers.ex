@@ -6,27 +6,11 @@ defmodule LucasNumbers do
   E.g.: 2, 1, 3, 4, 7, 11, 18, 29, ...
   """
 
-  def generate(series \\ [], count) do
-    unless is_integer(count), do: raise ArgumentError, "count must be specified as an integer >= 1"
-    unless count >= 1, do: raise ArgumentError, "count must be specified as an integer >= 1"
-    if Enum.count(series) >= count do
-      Enum.reverse series
-    else
-      generate([next_in(series) | series], count)
-    end
+  # A much simpler implentation using Stream.unfold/2 :
+  def generate(count) when is_integer(count) and count > 0 do
+    Stream.unfold({2, 1}, fn({n1, n2}) -> {n1, {n2, n1 + n2}} end)
+    |> Enum.take(count)
   end
 
-  defp next_in(series) do
-    case Enum.count(series) do
-      0 -> 2
-      1 -> 1
-      _ -> sum_of_first_two(series)
-    end
-  end
-
-  defp sum_of_first_two(series) do
-    [a, b | _] = series
-    a + b
-  end
-
+  def generate(_count), do: raise ArgumentError, "count must be specified as an integer >= 1"
 end
