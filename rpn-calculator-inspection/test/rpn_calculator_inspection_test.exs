@@ -72,7 +72,6 @@ defmodule RPNCalculatorInspectionTest do
 
   describe "await_reliability_check_result" do
     @tag task_id: 2
-    @tag :pending
     test "adds `input` => :ok to the results after a normal exit" do
       caller_process_pid = self()
       test_data = %{pid: caller_process_pid, input: "2 3 +"}
@@ -89,7 +88,6 @@ defmodule RPNCalculatorInspectionTest do
     end
 
     @tag task_id: 2
-    @tag :pending
     test "adds `input` => :error to the results after an abnormal exit" do
       caller_process_pid = self()
       test_data = %{pid: caller_process_pid, input: "3 0 /"}
@@ -106,7 +104,6 @@ defmodule RPNCalculatorInspectionTest do
     end
 
     @tag task_id: 2
-    @tag :pending
     test "adds `input` => :timeout to the results if no message arrives in 100ms" do
       caller_process_pid = self()
       test_data = %{pid: caller_process_pid, input: "24 12 /"}
@@ -130,7 +127,6 @@ defmodule RPNCalculatorInspectionTest do
     end
 
     @tag task_id: 2
-    @tag :pending
     test "normal exit messages from processes whose pids don't match stay in the inbox" do
       caller_process_pid = self()
       other_process_pid = spawn(fn -> nil end)
@@ -151,7 +147,6 @@ defmodule RPNCalculatorInspectionTest do
     end
 
     @tag task_id: 2
-    @tag :pending
     test "abnormal exit messages from processes whose pids don't match stay in the inbox" do
       caller_process_pid = self()
       other_process_pid = spawn(fn -> nil end)
@@ -172,7 +167,6 @@ defmodule RPNCalculatorInspectionTest do
     end
 
     @tag task_id: 2
-    @tag :pending
     test "any other messages stay in the inbox" do
       caller_process_pid = self()
       test_data = %{pid: caller_process_pid, input: "4 2 /"}
@@ -194,7 +188,6 @@ defmodule RPNCalculatorInspectionTest do
     end
 
     @tag task_id: 2
-    @tag :pending
     test "doesn't change the trap_exit flag of the caller process" do
       caller_process_pid = self()
       Process.flag(:trap_exit, false)
@@ -228,7 +221,6 @@ defmodule RPNCalculatorInspectionTest do
 
   describe "reliability_check" do
     @tag task_id: 3
-    @tag :pending
     test "returns an empty map when input list empty" do
       inputs = []
       calculator = &RPNCalculator.unsafe_division/1
@@ -237,7 +229,6 @@ defmodule RPNCalculatorInspectionTest do
     end
 
     @tag task_id: 3
-    @tag :pending
     test "returns a map with inputs as keys and :ok as values" do
       inputs = ["4 2 /", "8 2 /", "6 3 /"]
       calculator = &RPNCalculator.unsafe_division/1
@@ -252,7 +243,6 @@ defmodule RPNCalculatorInspectionTest do
     end
 
     @tag task_id: 3
-    @tag :pending
     test "returns a map when input list has 1000 elements" do
       inputs = Enum.map(1..1000, &"#{2 * &1} #{&1} /")
       calculator = &RPNCalculator.unsafe_division/1
@@ -262,7 +252,6 @@ defmodule RPNCalculatorInspectionTest do
     end
 
     @tag task_id: 3
-    @tag :pending
     test "returns a map when input list has 1000 elements and the calculator takes 50ms for each calculation" do
       inputs = Enum.map(1..1000, &"#{2 * &1} #{&1} /")
       parent_pid = self()
@@ -283,7 +272,6 @@ defmodule RPNCalculatorInspectionTest do
     end
 
     @tag task_id: 3
-    @tag :pending
     test "returns :error values for inputs that cause the calculator to crash" do
       inputs = ["3 0 /", "22 11 /", "4 0 /"]
       calculator = &RPNCalculator.unsafe_division/1
@@ -298,7 +286,6 @@ defmodule RPNCalculatorInspectionTest do
     end
 
     @tag task_id: 3
-    @tag :pending
     test "returns a map when input list has 1000 elements and all of them crash" do
       inputs = Enum.map(1..1000, &"#{2 * &1} 0 /")
       calculator = &RPNCalculator.unsafe_division/1
@@ -308,7 +295,6 @@ defmodule RPNCalculatorInspectionTest do
     end
 
     @tag task_id: 3
-    @tag :pending
     test "restores the original value of the trap_exit flag" do
       inputs = ["3 0 /", "22 11 /", "4 0 /"]
       calculator = &RPNCalculator.unsafe_division/1
@@ -331,7 +317,6 @@ defmodule RPNCalculatorInspectionTest do
 
   describe "correctness_check" do
     @tag task_id: 4
-    @tag :pending
     test "returns an empty list when input list empty" do
       inputs = []
       calculator = &RPNCalculator.unsafe_division/1
@@ -340,7 +325,6 @@ defmodule RPNCalculatorInspectionTest do
     end
 
     @tag task_id: 4
-    @tag :pending
     test "returns a list of results" do
       inputs = ["3 2 /", "4 2 /", "5 2 /"]
       calculator = &RPNCalculator.unsafe_division/1
@@ -349,7 +333,6 @@ defmodule RPNCalculatorInspectionTest do
     end
 
     @tag task_id: 4
-    @tag :pending
     test "returns a list of results when input list has 1000 elements" do
       inputs = Enum.map(1..1000, &"100 #{&1} /")
       calculator = &RPNCalculator.unsafe_division/1
@@ -358,7 +341,6 @@ defmodule RPNCalculatorInspectionTest do
     end
 
     @tag task_id: 4
-    @tag :pending
     test "returns a list of results when input list has 1000 elements and the calculator takes 50ms for each calculation" do
       inputs = Enum.map(1..1000, &"100 #{&1} /")
       parent_pid = self()
@@ -379,7 +361,6 @@ defmodule RPNCalculatorInspectionTest do
     end
 
     @tag task_id: 4
-    @tag :pending
     test "awaits a single task for 100ms" do
       inputs = ["1 1 /1"]
       calculator = fn _ -> :timer.sleep(500) end
