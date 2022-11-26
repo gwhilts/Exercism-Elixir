@@ -171,7 +171,6 @@ defmodule TopSecretTest do
     end
 
     @tag task_id: 4
-    @tag :pending
     test "works for private functions with a guard" do
       string = "defp do_sign(a) when a < 0, do: :-"
       ast = TopSecret.to_ast(string)
@@ -185,7 +184,6 @@ defmodule TopSecretTest do
 
   describe "decode_secret_message/1" do
     @tag task_id: 5
-    @tag :pending
     test "decodes a secret message from a single function definition" do
       code = """
       defmodule Notebook do
@@ -201,7 +199,6 @@ defmodule TopSecretTest do
     end
 
     @tag task_id: 5
-    @tag :pending
     test "decodes a secret message from a two function definitions" do
       code = """
       defmodule MyCalendar do
@@ -222,7 +219,6 @@ defmodule TopSecretTest do
     end
 
     @tag task_id: 5
-    @tag :pending
     test "decodes a secret message from many function definitions" do
       code = """
         defmodule TotallyNotTopSecret do
@@ -240,7 +236,6 @@ defmodule TopSecretTest do
     end
 
     @tag task_id: 5
-    @tag :pending
     test "decodes a secret message without a module definition" do
       code = """
       def force(mass, acceleration), do: mass * acceleration
@@ -256,7 +251,6 @@ defmodule TopSecretTest do
     end
 
     @tag task_id: 5
-    @tag :pending
     test "decodes another secret message from multiple modules" do
       code = """
       defmodule IOHelpers do

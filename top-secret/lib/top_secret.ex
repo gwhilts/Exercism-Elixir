@@ -7,6 +7,12 @@ defmodule TopSecret do
     {ast, update_msg(ast, msg)}
   end
 
+  def decode_secret_message(string) do
+    ast = to_ast(string)
+    {_ast, msg_parts} = Macro.prewalk(ast, [], &decode_secret_message_part/2)
+    msg_parts |> Enum.reverse() |> Enum.join()
+  end
+
   defp update_msg({:defp, _, args}, msg), do: [code_from(args) | msg]
   defp update_msg({:def,  _, args}, msg), do: [code_from(args) | msg]
   defp update_msg(_ast, msg),             do: msg
@@ -21,7 +27,4 @@ defmodule TopSecret do
     end
   end
 
-  def decode_secret_message(string) do
-    # Please implement the decode_secret_message/1 function
-  end
 end
