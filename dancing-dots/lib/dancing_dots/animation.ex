@@ -4,7 +4,10 @@ defmodule DancingDots.Animation do
   @type error :: any
   @type frame_number :: pos_integer
 
-  # Please implement the module
+  @callback init(list) :: {:error, String.t()} | {:ok, list}
+  @callback handle_frame(%DancingDots.Dot{}, Integer, list) :: %DancingDots.Dot{}
+
+
 end
 
 defmodule DancingDots.Flicker do
