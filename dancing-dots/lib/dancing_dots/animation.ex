@@ -21,7 +21,16 @@ defmodule DancingDots.Animation do
 end
 
 defmodule DancingDots.Flicker do
-  # Please implement the module
+  use DancingDots.Animation
+
+  @impl DancingDots.Animation
+  def handle_frame(dot, frame_number, _opts) do
+    case rem(frame_number, 4) do
+      0 -> %{dot | opacity: dot.opacity / 2}
+      _ -> dot
+    end
+  end
+
 end
 
 defmodule DancingDots.Zoom do
