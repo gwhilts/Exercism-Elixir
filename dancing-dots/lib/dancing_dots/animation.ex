@@ -4,9 +4,19 @@ defmodule DancingDots.Animation do
   @type error :: any
   @type frame_number :: pos_integer
 
-  @callback init(list) :: {:error, String.t()} | {:ok, list}
-  @callback handle_frame(%DancingDots.Dot{}, Integer, list) :: %DancingDots.Dot{}
+  @callback init(opts) :: {:error, error} | {:ok, opts}
+  @callback handle_frame(dot, frame_number, opts) :: dot
 
+  defmacro __using__(_) do
+    quote do
+      @behaviour DancingDots.Animation
+
+      @impl DancingDots.Animation
+      def init(opts), do: {:ok, opts}
+
+      defoverridable init: 1
+    end
+  end
 
 end
 
