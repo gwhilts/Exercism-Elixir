@@ -26,7 +26,7 @@ defmodule DancingDots.Flicker do
   @impl DancingDots.Animation
   def handle_frame(dot, frame_number, _opts) do
     case rem(frame_number, 4) do
-      0 -> %{dot | opacity: dot.opacity / 2}
+      0 -> %{ dot | opacity: dot.opacity / 2 }
       _ -> dot
     end
   end
@@ -34,5 +34,20 @@ defmodule DancingDots.Flicker do
 end
 
 defmodule DancingDots.Zoom do
-  # Please implement the module
+  use DancingDots.Animation
+
+  @impl DancingDots.Animation
+  def init(opts) do
+    if is_integer(opts[:velocity]) do
+      {:ok, opts}
+    else
+      {:error, "The :velocity option is required, and its value must be a number. Got: #{inspect(opts[:velocity])}"}
+    end
+  end
+
+  @impl DancingDots.Animation
+  def handle_frame(dot, frame_number, opts) do
+    delta = (frame_number - 1) * opts[:velocity]
+    %{ dot | radius: dot.radius + delta }
+  end
 end
