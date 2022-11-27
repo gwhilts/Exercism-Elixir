@@ -14,6 +14,7 @@ defmodule NucleotideCount do
   """
   @spec count(charlist(), char()) :: non_neg_integer()
   def count(strand, nucleotide) do
+    Enum.count(strand, &( &1 == nucleotide))
   end
 
   @doc """
@@ -26,5 +27,14 @@ defmodule NucleotideCount do
   """
   @spec histogram(charlist()) :: map()
   def histogram(strand) do
+    if valid?(strand) do
+       for n <- @nucleotides, into: %{}, do: {n, count(strand, n)}
+    else
+      {:error, "#{strand} is not a valid strand."}
+    end
+  end
+
+  defp valid?(strand) do
+    Enum.all?(strand, &( &1 in @nucleotides))
   end
 end
