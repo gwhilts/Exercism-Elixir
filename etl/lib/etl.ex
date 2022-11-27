@@ -9,5 +9,12 @@ defmodule ETL do
   """
   @spec transform(map) :: map
   def transform(input) do
+    Enum.reduce input, %{}, &( Map.merge &2, flip(&1) )
   end
+
+  defp flip({score, letters}) do
+    Enum.reduce letters, %{}, fn(tile, acc) -> Map.put(acc, String.downcase(tile), score) end
+  end
+
+
 end
