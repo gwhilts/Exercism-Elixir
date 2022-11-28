@@ -1,5 +1,4 @@
 defmodule Pangram do
-  @alphabet 'abcdefghijklmnopqrstuvwxyz'
   @doc """
   Determines if a word or sentence is a pangram.
   A pangram is a sentence using every letter of the alphabet at least once.
@@ -15,13 +14,7 @@ defmodule Pangram do
 
   @spec pangram?(String.t()) :: boolean
   def pangram?(sentence) do
-    chars = sentence
-    |> String.downcase()
-    |> String.to_charlist()
-    |> Enum.filter(&( &1 >= ?a and &1 <= ?z))
-    |> Enum.uniq()
-    |> Enum.sort()
-    chars == @alphabet
-
+    chars = String.downcase(sentence) |> String.to_charlist()
+    Enum.all? ?a..?z, &(&1 in chars)
   end
 end
