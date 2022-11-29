@@ -4,5 +4,9 @@ defmodule Isogram do
   """
   @spec isogram?(String.t()) :: boolean
   def isogram?(sentence) do
+    String.downcase(sentence)
+    |> String.to_charlist()
+    |> Enum.filter(&(&1 in ?a..?z))
+    |> (& &1 == Enum.uniq &1).()
   end
 end
