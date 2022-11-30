@@ -34,7 +34,6 @@ defmodule StringSeriesTest do
     assert StringSeries.slices("01234", 4) == ["0123", "1234"]
   end
 
-  @tag :pending
   test "slices include duplicates" do
     assert StringSeries.slices("777777", 3) == ["777", "777", "777", "777"]
   end
