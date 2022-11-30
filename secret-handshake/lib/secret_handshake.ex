@@ -6,7 +6,7 @@ defmodule SecretHandshake do
     |> Enum.reverse()
   end
 
-  def add_move(bit, moves) do
+  defp add_move(bit, moves) do
     case bit do
       1 -> ["wink"]
       2 -> ["double blink" | moves]
