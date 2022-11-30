@@ -1,19 +1,19 @@
 defmodule SecretHandshake do
-  @doc """
-  Determine the actions of a secret handshake based on the binary
-  representation of the given `code`.
+  import Bitwise
 
-  If the following bits are set, include the corresponding action in your list
-  of commands, in order from lowest to highest.
-
-  1 = wink
-  10 = double blink
-  100 = close your eyes
-  1000 = jump
-
-  10000 = Reverse the order of the operations in the secret handshake
-  """
-  @spec commands(code :: integer) :: list(String.t())
   def commands(code) do
+    Enum.reduce(0..4, [], fn bit, moves -> add_move(code &&& 2 ** bit, moves) end)
+    |> Enum.reverse()
+  end
+
+  def add_move(bit, moves) do
+    case bit do
+      1 -> ["wink"]
+      2 -> ["double blink" | moves]
+      4 -> ["close your eyes" | moves]
+      8 -> ["jump" | moves]
+      16 -> Enum.reverse(moves)
+      _ -> moves
+    end
   end
 end
