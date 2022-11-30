@@ -1,6 +1,6 @@
 # Exercism - Elixir Track
 
-These are the exercises in the Elixir track of Elixir (https://exercism.org/tracks/elixir), with my solutions.
+These are the exercises in the Elixir track of Exercism (https://exercism.org/tracks/elixir), with my solutions.
 
 All material should be considered © 2022 Exercism, subject to 
 the [Exercism Terms of Use](https://exercism.org/docs/using/legal/terms-of-service), and under the [MIT License](https://github.com/exercism/elixir/blob/main/LICENSE) unless otherwise specifed.
