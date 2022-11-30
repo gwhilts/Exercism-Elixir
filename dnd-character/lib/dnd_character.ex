@@ -9,17 +9,26 @@ defmodule DndCharacter do
           hitpoints: pos_integer()
         }
 
-  defstruct ~w[strength dexterity constitution intelligence wisdom charisma hitpoints]a
+  @abilities ~w[strength dexterity constitution intelligence wisdom charisma hitpoints]a
+  defstruct @abilities
 
   @spec modifier(pos_integer()) :: integer()
   def modifier(score) do
+    Integer.floor_div((score - 10), 2)
   end
 
   @spec ability :: pos_integer()
   def ability do
+    (for _ <- 1..4, into: [], do: :rand.uniform(6))
+    |> Enum.sort()
+    |> Enum.drop(1)
+    |> Enum.sum()
   end
 
   @spec character :: t()
   def character do
+    char = Enum.reduce(@abilities, %DndCharacter{}, fn(a, char) -> %{char | a => DndCharacter.ability} end)
+    %{char | hitpoints: 10 + modifier(char.constitution)}
   end
+
 end
