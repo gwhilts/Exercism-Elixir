@@ -1,10 +1,12 @@
 defmodule PigLatin do
-  @qu ~r/^(qu)(.*)$/i
-  @squ ~r/^([^aeiou]qu)(.*)$/i
-  @vowel ~r/^[aeiou]/i
-  @cons_y ~r/^([^aeiouy]+)(.*)$/i
-  @default ~r/^([^aeiou]+)(.*)$/i
-  @xy_cons ~r/^[x|y][^aeiou]/i
+  # Match rules (could have combines some of these, but left separate for clarity)
+  @default ~r/^([^aeiou]+)(.*)$/i # Starts w/ 1 or more cons
+  @cons_y ~r/^([^aeiouy]+)(.*)$/i # Starts w/ cons followed by a y
+  @qu ~r/^(qu)(.*)$/i             # Starts w/ qu
+  @squ ~r/^([^aeiou]qu)(.*)$/i    # Starts w/ cons + qu
+  @vowel ~r/^[aeiou]/i            # Starts w/ a vowel
+  @xy_cons ~r/^[x|y][^aeiou]/i    # Starts w x or y followed by a cons (i.e. vowel sound start)
+
 
   @doc """
   Given a `phrase`, translate it a word at a time to Pig Latin.
@@ -12,14 +14,13 @@ defmodule PigLatin do
   @spec translate(phrase :: String.t()) :: String.t()
   def translate(phrase) do
     String.split(phrase)
-    |> Enum.map(&word/1)
+    |> Enum.map(&translate_word/1)
     |> Enum.join(" ")
   end
 
-  def word(w) do
+  defp translate_word(w) do
     cond do
-      Regex.match? @vowel, w -> w <> "ay"
-      Regex.match? @xy_cons, w -> w <> "ay"
+      vowel_start?(w) -> w <> "ay"
       r = Regex.run @qu, w -> transform r
       r = Regex.run @squ, w -> transform r
       r = Regex.run @cons_y, w -> transform r
@@ -27,8 +28,6 @@ defmodule PigLatin do
     end
   end
 
-  def transform(parsed) do
-    {rest = Enum.at(parsed, 2), start = Enum.at(parsed, 1)}
-    rest <> start <> "ay"
-  end
+  defp transform(parsed), do: Enum.at(parsed, 2) <> Enum.at(parsed, 1) <> "ay"
+  defp vowel_start?(w), do: Regex.match?(@vowel, w) or Regex.match?(@xy_cons, w)
 end
