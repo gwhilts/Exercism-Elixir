@@ -4,7 +4,6 @@ defmodule TakeANumberDeluxeTest do
   alias TakeANumberDeluxe.Queue
 
   describe "start_link/1" do
-    @tag task_id: 1
     test "starts a new process" do
       {:ok, pid} = TakeANumberDeluxe.start_link(min_number: 1, max_number: 99)
       assert is_pid(pid)

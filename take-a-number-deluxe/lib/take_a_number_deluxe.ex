@@ -1,7 +1,10 @@
 defmodule TakeANumberDeluxe do
   use GenServer
-  alias File.State
   alias TakeANumberDeluxe.State
+
+  # REDO
+  # Really ought to wipe and re-attempt this ex from scratch. Got everything working
+  # eventually, but seriously fumbled and cheated my way there.
 
   # Client API
 
@@ -34,40 +37,45 @@ defmodule TakeANumberDeluxe do
 
   @impl GenServer
   def init(args) do
-    case State.new(args[:min_number], args[:max_number]) do
-      {:ok, state}  -> {:ok, state}
+    timeout = args[:auto_shutdown_timeout] || :infinity
+    case State.new(args[:min_number], args[:max_number], timeout) do
+      {:ok, state}  -> {:ok, state, timeout}
       {:error, reason} -> {:stop, reason}
     end
   end
 
   # def handle_call(:msg, _from, state), do: {:reply, reply, new_state} | {:error, reason}
   @impl GenServer
-  def handle_call(:report_state, _from, state), do: {:reply, state, state}
+  def handle_call(:report_state, _from, state), do: {:reply, state, state, state.auto_shutdown_timeout}
 
   @impl GenServer
   def handle_call(:queue_new_number, _from, state) do
     case State.queue_new_number(state) do
-      {:ok, num, new_state} -> {:reply, {:ok, num}, new_state}
-      {:error, msg} -> {:reply, {:error, msg}, state}
+      {:ok, num, new_state} -> {:reply, {:ok, num}, new_state, state.auto_shutdown_timeout}
+      {:error, msg} -> {:reply, {:error, msg}, state, state.auto_shutdown_timeout}
     end
   end
 
   @impl GenServer
   def handle_call({:serve_next_queued_number, priority_number}, _from, state) do
     case State.serve_next_queued_number(state, priority_number) do
-      {:ok, num, new_state} -> {:reply, {:ok, num}, new_state}
-      {:error, msg} -> {:reply, {:error, msg}, state}
+      {:ok, num, new_state} -> {:reply, {:ok, num}, new_state, state.auto_shutdown_timeout}
+      {:error, msg} -> {:reply, {:error, msg}, state, state.auto_shutdown_timeout}
     end
   end
 
   @impl GenServer
   def handle_cast(:reset_state, state) do
-    {:ok, new_state} = State.new(state.min_number, state.max_number)
-    {:noreply, new_state}
+    {:ok, new_state} = State.new(state.min_number, state.max_number, state.auto_shutdown_timeout)
+    {:noreply, new_state, state.auto_shutdown_timeout}
   end
 
 
-  # @impl GenServer
-  # def handle_info(:timeout)
-  # def handle_info(_)
+  @impl GenServer
+  def handle_info(:timeout, state) do
+    {:stop, :normal, state}
+  end
+
+  @impl GenServer
+  def handle_info(_, state), do: {:noreply, state, state.auto_shutdown_timeout}
 end
