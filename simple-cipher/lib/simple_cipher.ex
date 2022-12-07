@@ -1,54 +1,30 @@
 defmodule SimpleCipher do
-  @doc """
-  Given a `plaintext` and `key`, encode each character of the `plaintext` by
-  shifting it by the corresponding letter in the alphabet shifted by the number
-  of letters represented by the `key` character, repeating the `key` if it is
-  shorter than the `plaintext`.
+  @spec encode(String.t(), String.t()) :: String.t()
+  def encode(plaintext, key), do: zip(plaintext, key) |> Enum.map(&shift/1) |> Enum.join()
 
-  For example, for the letter 'd', the alphabet is rotated to become:
+  @spec decode(String.t(), String.t()) :: String.t()
+  def decode(ciphertext, key), do: zip(ciphertext, key) |> Enum.map(&unshift/1) |> Enum.join()
 
-  defghijklmnopqrstuvwxyzabc
+  @spec generate_key(pos_integer) :: String.t()
+  def generate_key(length),
+    do: for(_i <- 1..length, do: 96 + :rand.uniform(26)) |> List.to_string()
 
-  You would encode the `plaintext` by taking the current letter and mapping it
-  to the letter in the same position in this rotated alphabet.
+  # private
 
-  abcdefghijklmnopqrstuvwxyz
-  defghijklmnopqrstuvwxyzabc
-
-  "a" becomes "d", "t" becomes "w", etc...
-
-  Each letter in the `plaintext` will be encoded with the alphabet of the `key`
-  character in the same position. If the `key` is shorter than the `plaintext`,
-  repeat the `key`.
-
-  Example:
-
-  plaintext = "testing"
-  key = "abc"
-
-  The key should repeat to become the same length as the text, becoming
-  "abcabca". If the key is longer than the text, only use as many letters of it
-  as are necessary.
-  """
-  def encode(plaintext, key) do
+  # {?b, ?b} -> "c"
+  defp shift({char, key_char}) do
+    c = char + key_char - 97
+    if c > ?z, do: <<c - 26>>, else: <<c>>
   end
 
-  @doc """
-  Given a `ciphertext` and `key`, decode each character of the `ciphertext` by
-  finding the corresponding letter in the alphabet shifted by the number of
-  letters represented by the `key` character, repeating the `key` if it is
-  shorter than the `ciphertext`.
-
-  The same rules for key length and shifted alphabets apply as in `encode/2`,
-  but you will go the opposite way, so "d" becomes "a", "w" becomes "t",
-  etc..., depending on how much you shift the alphabet.
-  """
-  def decode(ciphertext, key) do
+  # {?b, ?b} -> "a"
+  defp unshift({char, key_char}) do
+    c = char - (key_char - 97)
+    if c < ?a, do: <<c + 26>>, else: <<c>>
   end
 
-  @doc """
-  Generate a random key of a given length. It should contain lowercase letters only.
-  """
-  def generate_key(length) do
-  end
+  # "abcd", "xy" -> [{?a, ?x}, {?b, ?y}, {?c, ?x}, {?d, ?y}]
+  # "xy", "abcd" -> [{?x, ?a}, {?y, ?b}]
+  defp zip(text, key),
+    do: Enum.zip(String.to_charlist(text), Stream.cycle(String.to_charlist(key)))
 end
