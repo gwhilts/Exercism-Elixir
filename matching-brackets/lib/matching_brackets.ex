@@ -10,14 +10,14 @@ defmodule MatchingBrackets do
   def  check_brackets(str), do: String.codepoints(str) |> check_brackets([])
   defp check_brackets([], []), do: true
   defp check_brackets([], _queue), do: false
+  defp check_brackets(_, :error), do: false
   defp check_brackets([h | tail], queue) do
-    good = List.first(queue)
-    bad = List.delete(@closers, good)
-    cond do
-      h == good -> check_brackets(tail, List.delete_at(queue, 0))
-      h in @openers -> check_brackets(tail, [@pairs[h] | queue])
-      h in bad -> false
-      true -> check_brackets(tail, queue)
+    new_q = cond do
+      h == List.first(queue) -> List.delete_at(queue, 0)
+      h in @openers -> [@pairs[h] | queue]
+      h in @closers -> :error
+      true -> queue
     end
+    check_brackets(tail, new_q)
   end
 end
