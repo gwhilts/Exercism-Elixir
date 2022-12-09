@@ -16,7 +16,6 @@ defmodule BowlingTest do
   end
 
   describe "roll/2: " do
-    @tag :pending
     @tag :late_roll
     test "cannot roll after bonus roll for spare" do
       game = Bowling.start()
@@ -25,7 +24,6 @@ defmodule BowlingTest do
       assert Bowling.roll(game, 2) == {:error, "Cannot roll after game is over"}
     end
 
-    @tag :pending
     @tag :late_roll
     test "cannot roll after bonus roll for strike" do
       game = Bowling.start()
@@ -34,7 +32,6 @@ defmodule BowlingTest do
       assert Bowling.roll(game, 2) == {:error, "Cannot roll after game is over"}
     end
 
-    @tag :pending
     @tag :late_roll
     test "cannot roll if game already has ten frames" do
       game = Bowling.start()
@@ -110,7 +107,7 @@ defmodule BowlingTest do
       assert Bowling.score(game) == {:error, "Score cannot be taken until the end of the game"}
     end
 
-    ##### complete games without bonus frames ####
+    ### complete games without bonus frames ###
 
     test "should be able to score a game with all zeros" do
       game = Bowling.start()
@@ -168,7 +165,8 @@ defmodule BowlingTest do
       assert Bowling.score(game) == {:ok, 81}
     end
 
-    # complete games with bonus frame[s]
+    ### complete games with bonus frame[s] ###
+
     test "a spare in the last frame gets a one roll bonus that is counted once" do
       game = Bowling.start()
       rolls = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 3, 7]
@@ -204,6 +202,7 @@ defmodule BowlingTest do
       assert Bowling.score(game) == {:ok, 31}
     end
 
+    @tag :ftf
     test "a strike with the one roll bonus after a spare in the last frame does not get a bonus" do
       game = Bowling.start()
       rolls = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 3, 10]
@@ -228,4 +227,68 @@ defmodule BowlingTest do
 
   ### PRIVATE METHODS -> MAKE THESE PRIVATE AND DELETE TESTS
 
+  # describe "complete?/1" do
+  #   @tag :private
+  #   test "returns false when there are less than ten frames" do
+  #     frames = %{ 1 => [0, 0], 2 => [0, 0], 3 => [0, 0], 4 => [0, 0], 5 => [0, 0], 6 => [0, 0], 7 => [0, 0], 8 => [0, 0], 9 => [0, 0]}
+  #     result = Bowling.complete?(frames)
+  #     refute result
+  #   end
+
+  #   @tag :private
+  #   test "returns false when only one ball was rolled the 10th frame" do
+  #     frames = %{ 1 => [0, 0], 2 => [0, 0], 3 => [0, 0], 4 => [0, 0], 5 => [0, 0], 6 => [0, 0], 7 => [0, 0], 8 => [0, 0], 9 => [0, 0], 10 => [7]}
+  #     result = Bowling.complete?(frames)
+  #     refute result
+  #   end
+
+  #   @tag :private
+  #   test "returns true when the 10th frame has two rolls and is open" do
+  #     frames = %{ 1 => [0, 0], 2 => [0, 0], 3 => [0, 0], 4 => [0, 0], 5 => [0, 0], 6 => [0, 0], 7 => [0, 0], 8 => [0, 0], 9 => [0, 0], 10 => [7, 2]}
+  #     result = Bowling.complete?(frames)
+  #     assert result
+  #   end
+
+  #   @tag :private
+  #   test "returns false when the 10th frame is a spare, but no bonus roll was thrown" do
+  #     frames = %{ 1 => [0, 0], 2 => [0, 0], 3 => [0, 0], 4 => [0, 0], 5 => [0, 0], 6 => [0, 0], 7 => [0, 0], 8 => [0, 0], 9 => [0, 0], 10 => [7, 3]}
+  #     result = Bowling.complete?(frames)
+  #     refute result
+  #   end
+
+  #   @tag :private
+  #   test "returns true when the 10th frame is a spare, and there's a bonus roll" do
+  #     frames = %{ 1 => [0, 0], 2 => [0, 0], 3 => [0, 0], 4 => [0, 0], 5 => [0, 0], 6 => [0, 0], 7 => [0, 0], 8 => [0, 0], 9 => [0, 0], 10 => [7, 3], 11 => [2]}
+  #     result = Bowling.complete?(frames)
+  #     assert result
+  #   end
+
+  #   @tag :private
+  #   test "returns false when the 10th frame is a strike, and there are no bonus rolls" do
+  #     frames = %{ 1 => [0, 0], 2 => [0, 0], 3 => [0, 0], 4 => [0, 0], 5 => [0, 0], 6 => [0, 0], 7 => [0, 0], 8 => [0, 0], 9 => [0, 0], 10 => [10]}
+  #     result = Bowling.complete?(frames)
+  #     refute result
+  #   end
+
+  #   @tag :private
+  #   test "returns false when the 10th frame is a strike, and there is only one bonus roll" do
+  #     frames = %{ 1 => [0, 0], 2 => [0, 0], 3 => [0, 0], 4 => [0, 0], 5 => [0, 0], 6 => [0, 0], 7 => [0, 0], 8 => [0, 0], 9 => [0, 0], 10 => [10], 11 => [5]}
+  #     result = Bowling.complete?(frames)
+  #     refute result
+  #   end
+
+  #   @tag :private
+  #   test "returns true when the 10th frame is a strike, and there are two bonus rolls" do
+  #     frames = %{ 1 => [0, 0], 2 => [0, 0], 3 => [0, 0], 4 => [0, 0], 5 => [0, 0], 6 => [0, 0], 7 => [0, 0], 8 => [0, 0], 9 => [0, 0], 10 => [10], 11 => [5, 5]}
+  #     result = Bowling.complete?(frames)
+  #     assert result
+  #   end
+
+  #   @tag :private
+  #   test "returns true when the 10th frame is a strike, and the first bonus roll is also a strike" do
+  #     frames = %{ 1 => [0, 0], 2 => [0, 0], 3 => [0, 0], 4 => [0, 0], 5 => [0, 0], 6 => [0, 0], 7 => [0, 0], 8 => [0, 0], 9 => [0, 0], 10 => [10], 11 => [10], 12 => [5]}
+  #     result = Bowling.complete?(frames)
+  #     assert result
+  #   end
+  # end
 end
