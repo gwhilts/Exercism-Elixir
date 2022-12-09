@@ -18,12 +18,12 @@ defmodule Bowling do
   # @spec roll({{int, int}, %{}}, integer) :: {:ok, any} | {:error, String.t()}
   def roll(_, roll) when roll < 0, do: {:error, "Negative roll is invalid"}
   def roll(g, roll) do
-    new_g = case {roll, g.ball} do
-      {10, 1} -> %{ball: 1, frame: g.frame + 1, frames: Map.put(g.frames, g.frame, [roll])}
-      {roll, 1} -> %{ball: 2, frame: g.frame, frames: Map.put(g.frames, g.frame, [roll])}
-      {roll, 2} -> %{ball: 1, frame: g.frame + 1, frames: Map.update!(g.frames, g.frame, &(Enum.concat(&1, [roll])))}
-    end
-    if valid_frame?(Map.get(new_g.frames, g.frame)), do: {:ok, new_g}, else: {:error, "Pin count exceeds pins on the lane"}
+      new_g = case {roll, g.ball} do
+        {10, 1} -> %{ball: 1, frame: g.frame + 1, frames: Map.put(g.frames, g.frame, [roll])}
+        {roll, 1} -> %{ball: 2, frame: g.frame, frames: Map.put(g.frames, g.frame, [roll])}
+        {roll, 2} -> %{ball: 1, frame: g.frame + 1, frames: Map.update!(g.frames, g.frame, &(Enum.concat(&1, [roll])))}
+      end
+      if valid_frame?(Map.get(new_g.frames, g.frame)), do: {:ok, new_g}, else: {:error, "Pin count exceeds pins on the lane"}
   end
 
   @doc """
@@ -36,7 +36,6 @@ defmodule Bowling do
     if complete?(g.frames) do
       {:ok, Enum.reduce(1..10, 0, fn f_num, sum -> sum + frame_score(g.frames, f_num) end)}
     else
-      IO.inspect(g)
       {:error, "Score cannot be taken until the end of the game"}
     end
   end
@@ -67,18 +66,23 @@ defmodule Bowling do
 
   # RESUME -> NOT WORKING, seems to be related to 2 bonus rolls (11th v 12th frame)
   def complete?(frames) do
-    if Enum.count(frames) < 10 do
-       false
-    else
-      IO.inspect(frames, label: "\nFrames: ")
-      true
+    tenth = Map.get(frames, 10, []) |> Enum.sum()
+    # IO.inspect(frames, label: "\nFrames: ")
+    # IO.inspect(Enum.count(frames), label: "\nFrame count: ")
+    cond do
+      Enum.count(frames) < 10 -> false
+      Enum.count(frames) > 12 -> false
+      tenth == 10 -> valid_bonus?(frames)
+      Enum.count(frames) == 10 -> true
     end
-    #   tenth = Map.get(frames, 10)
-    #   cond do
-    #     tenth == [10] -> length(Map.get(frames, 11, [])) == 2
-    #     Enum.sum(tenth) == 10 -> length(Map.get(frames, 11, [])) == 1
-    #     true -> true
-    #   end
-    # end
+  end
+
+  def valid_bonus?(frames) do
+    case {Map.get(frames, 10), Map.get(frames, 11, []), Map.get(frames, 12, [])} do
+      {[10], [10], [_b1]} -> true
+      {[10], [_b1, _b2], []} -> true
+      {[_b1, _b2], [_b3], []} -> true
+      _ -> false
+    end
   end
 end
