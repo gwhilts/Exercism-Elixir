@@ -1,62 +1,54 @@
 defmodule QueensTest do
   use ExUnit.Case
 
-  describe "test creation of queens with valid and invalid positions" do
+  describe "new/1: " do
     # @tag :pending
     test "queen with a valid position" do
       assert Queens.new(white: {2, 2})
     end
 
-    @tag :pending
     test "queen must have positive row" do
       assert_raise ArgumentError, fn ->
         Queens.new(white: {-2, 2})
       end
     end
 
-    @tag :pending
     test "queen must have row on board" do
       assert_raise ArgumentError, fn ->
         Queens.new(white: {8, 4})
       end
     end
 
-    @tag :pending
     test "queen must have positive column" do
       assert_raise ArgumentError, fn ->
         Queens.new(white: {2, -2})
       end
     end
 
-    @tag :pending
     test "queen must have column on board" do
       assert_raise ArgumentError, fn ->
         Queens.new(white: {4, 8})
       end
     end
 
-    @tag :pending
     test "specific placement" do
       queens = Queens.new(white: {3, 7}, black: {6, 1})
       assert queens.white == {3, 7}
       assert queens.black == {6, 1}
     end
 
-    @tag :pending
     test "cannot occupy same space" do
       assert_raise ArgumentError, fn ->
         Queens.new(white: {2, 4}, black: {2, 4})
       end
     end
 
-    @tag :pending
     test "cannot occupy same space, with black first" do
       assert_raise ArgumentError, fn ->
         Queens.new(black: {2, 4}, white: {2, 4})
       end
     end
 
-    @tag :pending
     test "invalid queen color" do
       assert_raise ArgumentError, fn ->
         Queens.new(blue: {0, 1})
@@ -64,7 +56,7 @@ defmodule QueensTest do
     end
   end
 
-  describe "test the ability of one queen to attack another" do
+  describe "can_attack?/1: " do
     @tag :pending
     test "cannot attack" do
       queens = Queens.new(white: {2, 4}, black: {6, 6})
@@ -120,7 +112,7 @@ defmodule QueensTest do
     end
   end
 
-  describe "test the string representation of queens on board" do
+  describe "to_string/1: " do
     @tag :pending
     test "string representation" do
       queens = Queens.new(white: {2, 4}, black: {6, 6})
