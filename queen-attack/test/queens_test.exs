@@ -56,55 +56,46 @@ defmodule QueensTest do
   end
 
   describe "can_attack?/1: " do
-    @tag :pending
     test "cannot attack" do
       queens = Queens.new(white: {2, 4}, black: {6, 6})
       refute Queens.can_attack?(queens)
     end
 
-    @tag :pending
     test "can attack on same row" do
       queens = Queens.new(white: {2, 4}, black: {2, 6})
       assert Queens.can_attack?(queens)
     end
 
-    @tag :pending
     test "can attack on same column" do
       queens = Queens.new(white: {5, 4}, black: {2, 4})
       assert Queens.can_attack?(queens)
     end
 
-    @tag :pending
     test "can attack on first diagonal" do
       queens = Queens.new(white: {2, 2}, black: {0, 4})
       assert Queens.can_attack?(queens)
     end
 
-    @tag :pending
     test "can attack on second diagonal" do
       queens = Queens.new(white: {2, 2}, black: {3, 1})
       assert Queens.can_attack?(queens)
     end
 
-    @tag :pending
     test "can attack on third diagonal" do
       queens = Queens.new(white: {2, 2}, black: {1, 1})
       assert Queens.can_attack?(queens)
     end
 
-    @tag :pending
     test "can attack on fourth diagonal" do
       queens = Queens.new(white: {1, 7}, black: {0, 6})
       assert Queens.can_attack?(queens)
     end
 
-    @tag :pending
     test "cannot attack if falling diagonals are only the same when reflected across the longest falling diagonal" do
       queens = Queens.new(white: {4, 1}, black: {2, 5})
       refute Queens.can_attack?(queens)
     end
 
-    @tag :pending
     test "cannot attack when only one queen set" do
       queens = Queens.new(white: {0, 5})
       refute Queens.can_attack?(queens)
