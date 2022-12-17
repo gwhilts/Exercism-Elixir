@@ -25,7 +25,6 @@ defmodule CryptoSquareTest do
     assert CryptoSquare.encode("Chill out.") == "clu hlt io "
   end
 
-  @tag :pending
   test "54 character plaintext results in 7 chunks, the last two with trailing spaces" do
     msg = "If man was meant to stay on the ground, god would have given us roots."
     cipher = "imtgdvs fearwer mayoogo anouuio ntnnlvt wttddes aohghn  sseoau "
