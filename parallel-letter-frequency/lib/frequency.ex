@@ -7,6 +7,12 @@ defmodule Frequency do
   The number of worker processes to use can be set with 'workers'.
   """
   @spec frequency([String.t()], pos_integer) :: map
-  def frequency(texts, workers) do
+  def frequency([], _), do: %{}
+  def frequency(texts, _workers) do
+    Enum.join(texts)
+    |> String.downcase()
+    |> String.replace(~r/[^a-zà-ÿ]/, "")
+    |> String.codepoints()
+    |> Enum.frequencies()
   end
 end
