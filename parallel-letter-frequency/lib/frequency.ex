@@ -7,7 +7,6 @@ defmodule Frequency do
   The number of worker processes to use can be set with 'workers'.
   """
   @spec frequency([String.t()], pos_integer) :: map
-  def frequency([], _), do: %{}
   def frequency(texts, workers) do
     Task.async_stream(texts, &freqs_for/1, max_concurrency: workers)
     |> Enum.map(fn {:ok, map} -> map end)
