@@ -8,9 +8,16 @@ defmodule Frequency do
   """
   @spec frequency([String.t()], pos_integer) :: map
   def frequency([], _), do: %{}
-  def frequency(texts, _workers) do
-    Enum.join(texts)
-    |> String.downcase()
+  def frequency(texts, workers) do
+    Task.async_stream(texts, &freqs_for/1, max_concurrency: workers)
+    |> Enum.map(fn {:ok, map} -> map end)
+    |> Enum.reduce(%{}, & Map.merge(&1, &2, fn _key, val1, val2 -> val1 + val2 end))
+  end
+
+  # Private
+
+  defp freqs_for(str) do
+    String.downcase(str)
     |> String.replace(~r/[^a-zà-ÿ]/, "")
     |> String.codepoints()
     |> Enum.frequencies()
