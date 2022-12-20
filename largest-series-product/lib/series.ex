@@ -7,8 +7,9 @@ defmodule Series do
   def largest_product(number_string, size) do
     if valid?(number_string, size) do
       String.codepoints(number_string)
+      |> Enum.map(&String.to_integer/1)
       |> Enum.chunk_every(size, 1, :discard)
-      |> Enum.map(&product/1)
+      |> Enum.map(fn digits -> Enum.reduce(digits, 1, &*/2) end)
       |> Enum.max
     else
       raise ArgumentError
@@ -16,11 +17,6 @@ defmodule Series do
   end
 
   # Private
-
-  defp product(digits) do
-    Enum.map(digits, &String.to_integer/1)
-    |> Enum.reduce(1, &*/2)
-  end
 
   defp valid?(nstring, size) do
     cond do
