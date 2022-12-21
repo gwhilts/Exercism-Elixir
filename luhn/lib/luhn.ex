@@ -5,12 +5,8 @@ defmodule Luhn do
   @spec valid?(String.t()) :: boolean
   def valid?(string) do
     num = String.replace(string, " ", "")
-    String.length(num) > 1
-    and !(Regex.match?(~r/[^\d]/, num))
-    and rem(checksum(num), 10) == 0
+    Regex.match?(~r/^\d{2,}$/, num) and rem(checksum(num), 10) == 0
   end
-
-  # Private
 
   defp checksum(digits) do
     String.codepoints(digits)
