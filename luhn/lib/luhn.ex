@@ -16,5 +16,5 @@ defmodule Luhn do
     |> Enum.reduce(0, fn {n, i}, sum -> if rem(i, 2) == 0, do: sum + n, else: sum + dbl_dig(n) end)
   end
 
-  defp dbl_dig(n), do: if n * 2 > 9, do: (n * 2) - 9, else: (n * 2)
+  defp dbl_dig(n), do: if n * 2 > 9, do: n * 2 - 9, else: n * 2
 end
