@@ -1,5 +1,4 @@
 defmodule Bowling do
-
   ## First pass. Sloppy. All tests passing, but it could use some tidying/refactoring
 
   @typedoc """
@@ -13,19 +12,17 @@ defmodule Bowling do
     of the game.
   """
   @type game :: %{
-    frame: pos_integer(),
-    ball: pos_integer(),
-    frames: map()
-  }
+          frame: pos_integer(),
+          ball: pos_integer(),
+          frames: map()
+        }
 
   @doc """
     Creates a new game of bowling that can be used to store the results of
     the game
   """
   @spec start() :: game
-  def start do
-    %{ball: 1, frame: 1, frames: %{}}
-  end
+  def start, do: %{ball: 1, frame: 1, frames: %{}}
 
   @doc """
     Records the number of pins knocked down on a single roll. Returns `any`
@@ -34,16 +31,18 @@ defmodule Bowling do
   """
   @spec roll(game, pos_integer) :: {:ok, game} | {:error, String.t()}
   def roll(_, roll) when roll < 0, do: {:error, "Negative roll is invalid"}
+
   def roll(g, roll) do
-    unless complete?(g.frames) do
-      new_g = case {roll, g.ball} do
-        {10, 1} -> %{ball: 1, frame: g.frame + 1, frames: Map.put(g.frames, g.frame, [roll])}
-        {roll, 1} -> %{ball: 2, frame: g.frame, frames: Map.put(g.frames, g.frame, [roll])}
-        {roll, 2} -> %{ball: 1, frame: g.frame + 1, frames: Map.update!(g.frames, g.frame, &(Enum.concat(&1, [roll])))}
-      end
-      if valid_frame?(Map.get(new_g.frames, g.frame)), do: {:ok, new_g}, else: {:error, "Pin count exceeds pins on the lane"}
-    else
+    if complete?(g.frames) do
       {:error, "Cannot roll after game is over"}
+    else
+      new_g =
+        case {roll, g.ball} do
+          {10, 1} -> %{ball: 1, frame: g.frame + 1, frames: Map.put(g.frames, g.frame, [roll])}
+          {roll, 1} ->  %{ball: 2, frame: g.frame, frames: Map.put(g.frames, g.frame, [roll])}
+          {roll, 2} ->  %{ball: 1, frame: g.frame + 1, frames: Map.update!(g.frames, g.frame, &Enum.concat(&1, [roll]))}
+        end
+      if valid_frame?(Map.get(new_g.frames, g.frame)), do: {:ok, new_g}, else: {:error, "Pin count exceeds pins on the lane"}
     end
   end
 
@@ -100,5 +99,4 @@ defmodule Bowling do
   end
 
   defp valid_frame?(frame), do: Enum.sum(frame) <= 10
-
 end
