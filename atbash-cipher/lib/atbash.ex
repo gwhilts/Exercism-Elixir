@@ -27,8 +27,7 @@ defmodule Atbash do
     cipher
     |> String.to_charlist()
     |> Enum.filter(&(&1 in ?a..?z or &1 in ?0..?9))
-    |> Enum.map(&decode_char/1)
-    |> Enum.join("")
+    |> Enum.map_join("", &decode_char/1)
   end
 
   defp encode_char(c), do: if c in ?a..?z, do: ?z - (c - ?a), else: c
