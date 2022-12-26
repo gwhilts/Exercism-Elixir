@@ -32,5 +32,4 @@ defmodule Atbash do
 
   defp encode_char(c), do: if c in ?a..?z, do: ?z - (c - ?a), else: c
   defp decode_char(c), do: if c in ?a..?z, do: <<?a + (?z - c)>>, else: <<c>>
-
 end
