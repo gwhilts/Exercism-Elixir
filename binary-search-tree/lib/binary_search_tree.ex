@@ -5,9 +5,7 @@ defmodule BinarySearchTree do
   Create a new Binary Search Tree with root's value as the given 'data'
   """
   @spec new(any) :: bst_node
-  def new(data) do
-    %{data: data, left: nil, right: nil}
-  end
+  def new(data), do: %{data: data, left: nil, right: nil}
 
   @doc """
   Creates and inserts a node with its value as 'data' into the tree.
