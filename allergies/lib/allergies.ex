@@ -7,7 +7,8 @@ defmodule Allergies do
   """
   @spec list(non_neg_integer) :: [String.t()]
   def list(flags) do
-    Enum.reduce(@allergies, [], fn {allergen, val}, lst -> if (flags &&& val) == val, do: [allergen | lst], else: lst end)
+    @allergies
+    |> Enum.reduce([], fn {allergen, val}, lst -> if (flags &&& val) == val, do: [allergen | lst], else: lst end)
     |> Enum.reverse()
   end
 
