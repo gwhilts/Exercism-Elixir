@@ -17,7 +17,7 @@ defmodule BoutiqueInventory do
 
 # Elixir feedback said to "Use the Enum.reduce function in the total_quantity
 # function to practice. It's the best fitting Enum function for this task."
-# I like reduce, but my solution is much simpler and clearer.
+# I like reduce, but IMHO, this solution is simple and much clearer.
   def total_quantity(item) do
     Map.values(item[:quantity_by_size]) |> Enum.sum()
   end
