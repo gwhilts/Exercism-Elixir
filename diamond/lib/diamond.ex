@@ -3,7 +3,7 @@ defmodule Diamond do
   Given a letter, it prints a diamond starting with 'A',
   with the supplied letter at the widest point.
   """
-  # @spec build_shape(char) :: String.t()
+  @spec build_shape(char) :: String.t()
   def build_shape(char) do
     width = (char - 64) * 2 - 1
     top = rows_to(char, width)
