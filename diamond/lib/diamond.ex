@@ -8,7 +8,7 @@ defmodule Diamond do
     center = row(char, 0)
     width = String.length(center)
     top = rows_to(char, width)
-    Enum.join(top) <> center <> "\n" <>Enum.join(Enum.reverse(top))
+    Enum.join(top) <> center <> "\n" <> Enum.join(Enum.reverse(top))
   end
 
   defp row(?A, 0), do: "A"
@@ -20,7 +20,7 @@ defmodule Diamond do
   end
 
   defp rows_to(?A, _), do: [""]
-  defp rows_to(char, width), do: for i <- ?A..(char - 1), do: row(i, width)
+  defp rows_to(char, width), do: for c <- ?A..(char - 1), do: row(c, width)
 
   defp spaces(char), do: (char - 64) * 2 - 3
 end
