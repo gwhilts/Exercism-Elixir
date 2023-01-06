@@ -99,8 +99,7 @@ defmodule Poker do
   end
 
   defp threes_of_kind(hmap)  do
-    hmap
-    |> Map.filter(fn {_key, parsed_hand} -> Enum.frequencies(pip_counts(parsed_hand)) |> Map.values |> Enum.any?(& &1 == 3) end)
+    Map.filter(hmap, fn {_key, parsed_hand} -> Enum.frequencies(pip_counts(parsed_hand)) |> Map.values |> Enum.any?(& &1 == 3) end)
     |> maybe()
   end
 
