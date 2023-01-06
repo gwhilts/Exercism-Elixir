@@ -2,9 +2,9 @@ defmodule Poker do
 
   ## Exercism:
   #
-  # Second pass: Just a bit of tidying
-  # Could still use some refactoring, or
-  # may even a better algoritm.
+  # Could probaby make it shorter, e.g. use a reduce_while instead
+  # of the || chain, but I think this solution is tidy and clear,
+  # if a bit verbose.
 
 
   @doc """
