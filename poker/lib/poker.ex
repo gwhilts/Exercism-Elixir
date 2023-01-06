@@ -43,7 +43,7 @@ defmodule Poker do
     || full_houses(hmap)
     || flushes(hmap)
     || straights(hmap)
-    || threes_of_kind(hmap)
+    || maybe(threes_of_kind hmap)
     || maybe(two_pairs hmap)
     || maybe(pairs hmap)
     || hmap
@@ -100,7 +100,6 @@ defmodule Poker do
 
   defp threes_of_kind(hmap)  do
     Map.filter(hmap, fn {_key, parsed_hand} -> Enum.frequencies(pip_counts(parsed_hand)) |> Map.values |> Enum.any?(& &1 == 3) end)
-    |> maybe()
   end
 
   defp two_pairs(hmap) do
