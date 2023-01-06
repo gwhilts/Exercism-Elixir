@@ -44,8 +44,8 @@ defmodule Poker do
     || flushes(hmap)
     || straights(hmap)
     || threes_of_kind(hmap)
-    || two_pairs(hmap)
-    || pairs(hmap)
+    || maybe(two_pairs hmap)
+    || maybe(pairs hmap)
     || hmap
     ) |> highest_score
   end
@@ -86,9 +86,7 @@ defmodule Poker do
   end
 
   defp pairs(hmap) do
-    hmap
-    |> Map.filter(fn {_key, parsed_hand} -> Enum.frequencies(pip_counts(parsed_hand)) |> Map.values |> Enum.any?(& &1 == 2) end)
-    |> maybe()
+    Map.filter(hmap, fn {_key, parsed_hand} -> Enum.frequencies(pip_counts(parsed_hand)) |> Map.values |> Enum.any?(& &1 == 2) end)
   end
 
   defp straight_flushes(hmap), do: if flushes(hmap), do: flushes(hmap) |> straights()
@@ -107,9 +105,7 @@ defmodule Poker do
   end
 
   defp two_pairs(hmap) do
-    hmap
-    |> Map.filter(fn {_key, parsed_hand} -> Enum.frequencies(pip_counts(parsed_hand)) |> Map.values |> Enum.frequencies() |> Map.values |> Enum.any?(& &1 == 2) end)
-    |> maybe()
+    Map.filter(hmap, fn {_key, parsed_hand} -> Enum.frequencies(pip_counts(parsed_hand)) |> Map.values |> Enum.frequencies() |> Map.values |> Enum.any?(& &1 == 2) end)
   end
 
 # Helper functions
