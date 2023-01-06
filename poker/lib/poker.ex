@@ -38,11 +38,11 @@ defmodule Poker do
   @spec best_hand(list(list(String.t()))) :: list(list(String.t()))
   def best_hand(hands) do
     hmap = parse_hands(hands)
-    (  straight_flushes(hmap)
+    (  maybe(straight_flushes hmap)
     || maybe(fours_of_a_kind hmap)
-    || full_houses(hmap)
-    || flushes(hmap)
-    || straights(hmap)
+    || maybe(full_houses hmap)
+    || maybe(flushes(hmap))
+    || maybe(straights(hmap))
     || maybe(threes_of_kind hmap)
     || maybe(two_pairs hmap)
     || maybe(pairs hmap)
@@ -63,46 +63,35 @@ defmodule Poker do
     |> Map.get(:hands)
   end
 
-  # Each returns hmap of hands that match or nil
-  # Most follow pattern map |> filter |> maybe()
-  # Straight and Straight flush are a bit wonkier
+  # Each method below returns an hmap of hands that match the poker hand
+  # described in the method name, or an empty map if there are none
+  # They're all a simple Map.filter, except straights/1 which req some
+  # finagling for low ace situations
 
-  defp flushes(hmap) do
-    hmap
-    |> Map.filter(fn {_key, parsed_hand} -> Enum.frequencies(suits(parsed_hand)) |> Map.values |> Enum.any?(& &1 == 5) end)
-    |> maybe()
-  end
+  defp flushes(hmap), do:
+    Map.filter(hmap, fn {_key, parsed_hand} -> Enum.frequencies(suits(parsed_hand)) |> Map.values |> Enum.any?(& &1 == 5) end)
 
-  defp fours_of_a_kind(hmap) do
+  defp fours_of_a_kind(hmap), do:
     Map.filter(hmap, fn {_key, parsed_hand} -> Enum.frequencies(pip_counts(parsed_hand)) |> Map.values |> Enum.any?(& &1 == 4) end)
-  end
 
-  defp full_houses(hmap) do
-    hmap
-    |> Map.filter(fn {_key, parsed_hand} -> Enum.frequencies(pip_counts(parsed_hand)) |> Map.values() |> (&Enum.sort(&1) == [2, 3]).() end)
-    |> maybe()
-  end
+  defp full_houses(hmap), do:
+    Map.filter(hmap, fn {_key, parsed_hand} -> Enum.frequencies(pip_counts(parsed_hand)) |> Map.values() |> (&Enum.sort(&1) == [2, 3]).() end)
 
-  defp pairs(hmap) do
+  defp pairs(hmap), do:
     Map.filter(hmap, fn {_key, parsed_hand} -> Enum.frequencies(pip_counts(parsed_hand)) |> Map.values |> Enum.any?(& &1 == 2) end)
-  end
 
-  defp straight_flushes(hmap), do: if flushes(hmap), do: flushes(hmap) |> straights()
+  defp straight_flushes(hmap), do: flushes(hmap) |> straights()
 
   defp straights(hmap) do
-    hmap
-    |> Map.filter(fn {_key, parsed_hand} -> pip_counts(parsed_hand) |> has_straight?() end)
+    Map.filter(hmap, fn {_key, parsed_hand} -> pip_counts(parsed_hand) |> has_straight?() end)
     |> Enum.into(%{}, fn {key, parsed_hand} -> if pip_counts(parsed_hand) == [14, 5, 4, 3, 2], do: {key, ace_low(parsed_hand)}, else: {key, parsed_hand} end)
-    |> maybe()
   end
 
-  defp threes_of_kind(hmap)  do
+  defp threes_of_kind(hmap), do:
     Map.filter(hmap, fn {_key, parsed_hand} -> Enum.frequencies(pip_counts(parsed_hand)) |> Map.values |> Enum.any?(& &1 == 3) end)
-  end
 
-  defp two_pairs(hmap) do
+  defp two_pairs(hmap), do:
     Map.filter(hmap, fn {_key, parsed_hand} -> Enum.frequencies(pip_counts(parsed_hand)) |> Map.values |> Enum.frequencies() |> Map.values |> Enum.any?(& &1 == 2) end)
-  end
 
 # Helper functions
   defp ace_low(parsed_hand), do: Enum.map(parsed_hand, fn {pips, suit} -> if pips == 14, do: {1, suit}, else: {pips, suit} end)
