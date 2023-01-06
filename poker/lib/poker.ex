@@ -39,7 +39,7 @@ defmodule Poker do
   def best_hand(hands) do
     hmap = parse_hands(hands)
     (  straight_flushes(hmap)
-    || fours_of_a_kind(hmap)
+    || maybe(fours_of_a_kind hmap)
     || full_houses(hmap)
     || flushes(hmap)
     || straights(hmap)
@@ -74,9 +74,7 @@ defmodule Poker do
   end
 
   defp fours_of_a_kind(hmap) do
-    hmap
-    |> Map.filter(fn {_key, parsed_hand} -> Enum.frequencies(pip_counts(parsed_hand)) |> Map.values |> Enum.any?(& &1 == 4) end)
-    |> maybe()
+    Map.filter(hmap, fn {_key, parsed_hand} -> Enum.frequencies(pip_counts(parsed_hand)) |> Map.values |> Enum.any?(& &1 == 4) end)
   end
 
   defp full_houses(hmap) do
