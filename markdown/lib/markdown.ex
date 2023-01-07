@@ -16,8 +16,10 @@ defmodule Markdown do
     |> String.split("\n")
     |> Enum.map(&process/1)
     |> Enum.join()
-    |> patch()
+    |> wrap_list()
   end
+
+
 
   defp process(t) do
     cond do
@@ -71,10 +73,18 @@ defmodule Markdown do
     end
   end
 
-  defp patch(l) do
-    String.replace(l, "<li>", "<ul><li>", global: false)
-    |> String.reverse()
-    |> String.replace(String.reverse("</li>"), String.reverse("</li></ul>"), global: false)
-    |> String.reverse()
-  end
+  defp wrap_list(l), do: String.replace(l, ~r|(<li>.*</li>)|, "<ul>\\1</ul>")
+
+# Refactoring notes:
+
+# Round one:
+# - replace nested fun calls with pipelines
+# - replace nested if/else with cond
+# - other minor tidying up of unneeded anon functions and binary concat ops
+
+# Round two:
+# - replace messy patch/1 with wrap_list/1
+#   - change name to reflect purpose
+#   - replace all the weird reversing/replacing/reversing with a simple regex
+
 end
