@@ -14,66 +14,31 @@ defmodule Markdown do
   def parse(m) do
     m
     |> String.split("\n")
-    |> Enum.map(&process/1)
-    |> Enum.join()
-    |> wrap_list()
+    |> Enum.map_join(&wrap_line/1)
+    |> add_emphasis()
+    |> wrap_lists()
   end
 
-
-
-  defp process(t) do
-    cond do
-      String.match?(t, ~R/^#{1,6}[^#]/) -> parse_header_md_level(t) |> enclose_with_header_tag()
-      String.starts_with?(t, "*") -> parse_list_md_level(t)
-      true -> enclose_with_paragraph_tag(String.split(t))
-    end
+  defp add_emphasis(text) do
+    text
+    |> String.replace(~r/__(.+)__/, "<strong>\\1</strong>")
+    |> String.replace(~r/_(.+)_/, "<em>\\1</em>")
   end
 
-  defp parse_header_md_level(hwt) do
-    [h | t] = String.split(hwt)
-    {to_string(String.length(h)), Enum.join(t, " ")}
-  end
+  defp wrap_line("#" <> line), do: wrap_header(line, 1)
+  defp wrap_line("* " <> line), do: wrap_list_item(line)
+  defp wrap_line(line), do: "<p>#{line}</p>"
 
-  defp parse_list_md_level(l) do
-    t = String.split(String.trim_leading(l, "* "))
-    "<li>" <> join_words_with_tags(t) <> "</li>"
-  end
+  defp wrap_header(" " <> line, level), do: "<h#{level}>#{line}</h#{level}>"
+  defp wrap_header("#" <> line, level) when level < 6, do: wrap_header(line, level + 1)
+  defp wrap_header("#" <> line, _), do: wrap_paragraph("#######" <> line)
 
-  defp enclose_with_header_tag({hl, htl}) do
-    "<h" <> hl <> ">" <> htl <> "</h" <> hl <> ">"
-  end
+  defp wrap_lists(lines), do: String.replace(lines, ~r|(<li>.*</li>)|, "<ul>\\1</ul>")
 
-  defp enclose_with_paragraph_tag(t) do
-    "<p>#{join_words_with_tags(t)}</p>"
-  end
+  defp wrap_list_item(line), do: "<li>#{line}</li>"
 
-  defp join_words_with_tags(t) do
-    t
-    |> Enum.map(&replace_md_with_tag/1)
-    |> Enum.join(" ")
-  end
-
-  defp replace_md_with_tag(w) do
-    replace_suffix_md(replace_prefix_md(w))
-  end
-
-  defp replace_prefix_md(w) do
-    cond do
-      w =~ ~r/^#{"__"}{1}/ -> String.replace(w, ~r/^#{"__"}{1}/, "<strong>", global: false)
-      w =~ ~r/^[#{"_"}{1}][^#{"_"}+]/ -> String.replace(w, ~r/_/, "<em>", global: false)
-      true -> w
-    end
-  end
-
-  defp replace_suffix_md(w) do
-    cond do
-      w =~ ~r/#{"__"}{1}$/ -> String.replace(w, ~r/#{"__"}{1}$/, "</strong>")
-      w =~ ~r/[^#{"_"}{1}]/ -> String.replace(w, ~r/_/, "</em>")
-      true -> w
-    end
-  end
-
-  defp wrap_list(l), do: String.replace(l, ~r|(<li>.*</li>)|, "<ul>\\1</ul>")
+  defp wrap_paragraph(line), do: "<p>#{line}</p>"
+end
 
 # Refactoring notes:
 
@@ -87,4 +52,12 @@ defmodule Markdown do
 #   - change name to reflect purpose
 #   - replace all the weird reversing/replacing/reversing with a simple regex
 
-end
+# Round three
+# - complete rewrite
+#   - smarter function names
+#   - cleaner impl using pattern matching & regex
+# - Note:
+#     This replicates the original behavior and passes all the test
+#     but there are numerous cases of legimate markdown that would
+#     fail to be correctly transformed (e.g. multiple lists, snake-cased
+#     text, etc.)
