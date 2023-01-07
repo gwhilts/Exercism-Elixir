@@ -12,19 +12,18 @@ defmodule Markdown do
   """
   @spec parse(String.t()) :: String.t()
   def parse(m) do
-    patch(Enum.join(Enum.map(String.split(m, "\n"), fn t -> process(t) end)))
+    m
+    |> String.split("\n")
+    |> Enum.map(&process/1)
+    |> Enum.join()
+    |> patch()
   end
 
   defp process(t) do
-    if (String.starts_with?(t, "#") && !String.starts_with?(t, "#######")) ||
-         String.starts_with?(t, "*") do
-      if String.starts_with?(t, "#") do
-        enclose_with_header_tag(parse_header_md_level(t))
-      else
-        parse_list_md_level(t)
-      end
-    else
-      enclose_with_paragraph_tag(String.split(t))
+    cond do
+      String.match?(t, ~R/^#{1,6}[^#]/) -> parse_header_md_level(t) |> enclose_with_header_tag()
+      String.starts_with?(t, "*") -> parse_list_md_level(t)
+      true -> enclose_with_paragraph_tag(String.split(t))
     end
   end
 
@@ -47,7 +46,9 @@ defmodule Markdown do
   end
 
   defp join_words_with_tags(t) do
-    Enum.join(Enum.map(t, fn w -> replace_md_with_tag(w) end), " ")
+    t
+    |> Enum.map(&replace_md_with_tag/1)
+    |> Enum.join(" ")
   end
 
   defp replace_md_with_tag(w) do
@@ -71,7 +72,7 @@ defmodule Markdown do
   end
 
   defp patch(l) do
-    String.replace(l, "<li>", "<ul>" <> "<li>", global: false)
+    String.replace(l, "<li>", "<ul><li>", global: false)
     |> String.reverse()
     |> String.replace(String.reverse("</li>"), String.reverse("</li></ul>"), global: false)
     |> String.reverse()
