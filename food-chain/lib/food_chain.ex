@@ -1,13 +1,13 @@
 defmodule FoodChain do
   @critters %{
-      1 => %{name: "fly", extra: "", verse: ""},
-      2 => %{name: "spider", extra: " that wriggled and jiggled and tickled inside her", verse: "\nIt wriggled and jiggled and tickled inside her."},
-      3 => %{name: "bird", extra: "", verse: "\nHow absurd to swallow a bird!"},
-      4 => %{name: "cat", extra: "", verse: "\nImagine that, to swallow a cat!"},
-      5 => %{name: "dog", extra: "", verse: "\nWhat a hog, to swallow a dog!"},
-      6 => %{name: "goat", extra: "", verse: "\nJust opened her throat and swallowed a goat!"},
-      7 => %{name: "cow", extra: "", verse: "\nI don't know how she swallowed a cow!"}
-    }
+    1 => %{name: "fly", extra: "", verse: ""},
+    2 => %{name: "spider", extra: " that wriggled and jiggled and tickled inside her", verse: "\nIt wriggled and jiggled and tickled inside her."},
+    3 => %{name: "bird", extra: "", verse: "\nHow absurd to swallow a bird!"},
+    4 => %{name: "cat", extra: "", verse: "\nImagine that, to swallow a cat!"},
+    5 => %{name: "dog", extra: "", verse: "\nWhat a hog, to swallow a dog!"},
+    6 => %{name: "goat", extra: "", verse: "\nJust opened her throat and swallowed a goat!"},
+    7 => %{name: "cow", extra: "", verse: "\nI don't know how she swallowed a cow!"}
+  }
 
   @doc """
   Generate consecutive verses of the song 'I Know an Old Lady Who Swallowed a Fly'.
