@@ -1,12 +1,12 @@
 defmodule FoodChain do
   @critters %{
     1 => %{name: "fly", extra: "", verse: ""},
-    2 => %{name: "spider", extra: " that wriggled and jiggled and tickled inside her", verse: "\nIt wriggled and jiggled and tickled inside her."},
-    3 => %{name: "bird", extra: "", verse: "\nHow absurd to swallow a bird!"},
-    4 => %{name: "cat", extra: "", verse: "\nImagine that, to swallow a cat!"},
-    5 => %{name: "dog", extra: "", verse: "\nWhat a hog, to swallow a dog!"},
-    6 => %{name: "goat", extra: "", verse: "\nJust opened her throat and swallowed a goat!"},
-    7 => %{name: "cow", extra: "", verse: "\nI don't know how she swallowed a cow!"}
+    2 => %{name: "spider", extra: " that wriggled and jiggled and tickled inside her", verse: "It wriggled and jiggled and tickled inside her.\n"},
+    3 => %{name: "bird", extra: "", verse: "How absurd to swallow a bird!\n"},
+    4 => %{name: "cat", extra: "", verse: "Imagine that, to swallow a cat!\n"},
+    5 => %{name: "dog", extra: "", verse: "What a hog, to swallow a dog!\n"},
+    6 => %{name: "goat", extra: "", verse: "Just opened her throat and swallowed a goat!\n"},
+    7 => %{name: "cow", extra: "", verse: "I don't know how she swallowed a cow!\n"}
   }
 
   @doc """
@@ -16,9 +16,9 @@ defmodule FoodChain do
   def recite(start, stop), do: Enum.map_join(start..stop, "\n", &recite_verse/1)
 
   defp recite_verse(8), do: "I know an old lady who swallowed a horse.\nShe's dead, of course!\n"
-  defp recite_verse(v), do: "I know an old lady who swallowed a #{@critters[v].name}.#{@critters[v].verse}\n" <> count_down_from(v)
+  defp recite_verse(v), do: "I know an old lady who swallowed a #{@critters[v].name}.\n#{@critters[v].verse}" <> count_down_from(v)
 
-  defp count_down_from(v), do: Enum.map(v..1, &link/1) |> Enum.join("\n")
+  defp count_down_from(v), do: Enum.map_join(v..1, "\n", &link/1)
 
   defp link(1), do: "I don't know why she swallowed the fly. Perhaps she'll die.\n"
   defp link(v), do: "She swallowed the #{@critters[v].name} to catch the #{@critters[v - 1].name <> @critters[v - 1].extra}."
