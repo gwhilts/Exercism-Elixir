@@ -1,12 +1,12 @@
 defmodule FoodChain do
   @critters %{
-    1 => %{name: "fly", extra: "", verse: ""},
-    2 => %{name: "spider", extra: " that wriggled and jiggled and tickled inside her", verse: "It wriggled and jiggled and tickled inside her.\n"},
-    3 => %{name: "bird", extra: "", verse: "How absurd to swallow a bird!\n"},
-    4 => %{name: "cat", extra: "", verse: "Imagine that, to swallow a cat!\n"},
-    5 => %{name: "dog", extra: "", verse: "What a hog, to swallow a dog!\n"},
-    6 => %{name: "goat", extra: "", verse: "Just opened her throat and swallowed a goat!\n"},
-    7 => %{name: "cow", extra: "", verse: "I don't know how she swallowed a cow!\n"}
+    1 => %{name: "fly", descr: "", verse: ""},
+    2 => %{name: "spider", descr: " that wriggled and jiggled and tickled inside her", verse: "It wriggled and jiggled and tickled inside her.\n"},
+    3 => %{name: "bird", descr: "", verse: "How absurd to swallow a bird!\n"},
+    4 => %{name: "cat", descr: "", verse: "Imagine that, to swallow a cat!\n"},
+    5 => %{name: "dog", descr: "", verse: "What a hog, to swallow a dog!\n"},
+    6 => %{name: "goat", descr: "", verse: "Just opened her throat and swallowed a goat!\n"},
+    7 => %{name: "cow", descr: "", verse: "I don't know how she swallowed a cow!\n"}
   }
 
   @doc """
@@ -21,5 +21,5 @@ defmodule FoodChain do
   defp count_down_from(v), do: Enum.map_join(v..1, "\n", &link/1)
 
   defp link(1), do: "I don't know why she swallowed the fly. Perhaps she'll die.\n"
-  defp link(v), do: "She swallowed the #{@critters[v].name} to catch the #{@critters[v - 1].name <> @critters[v - 1].extra}."
+  defp link(v), do: "She swallowed the #{@critters[v].name} to catch the #{@critters[v - 1].name <> @critters[v - 1].descr}."
 end
