@@ -4,39 +4,33 @@ defmodule AffineCipher do
   """
   @type key() :: %{a: integer, b: integer}
 
-  # m = size of alphabet
-  @m 26
-
   @doc """
   Encode an encrypted message using a key: E(x) = (ai + b) mod m
   """
   @spec encode(key :: key(), message :: String.t()) :: {:error, String.t()} | {:ok, String.t()}
-  def encode(%{a: a, b: b}, msg), do: coprime_error(a, @m) || {:ok, _encode(a, b, msg)}
+  def encode(%{a: a, b: b}, msg), do: coprime_error(a, 26) || {:ok, _encode(a, b, msg)}
 
   @doc """
   Decode an encrypted message using a key: D(y) = (a^-1)(y - b) mod m where (a^-1) is the MMI of a, aka a_
   """
   @spec decode(key :: key(), message :: String.t()) :: {:error, String.t()} | {:ok, String.t()}
-  def decode(%{a: a, b: b}, msg), do: coprime_error(a, @m) || {:ok, _decode(mmi(a), b, msg)}
+  def decode(%{a: a, b: b}, msg), do: coprime_error(a, 26) || {:ok, _decode(mmi(a), b, msg)}
 
 # Private
+  defp coprime_error(a, m), do: if Integer.gcd(a, m) == 1, do: nil, else: {:error, "a and m must be coprime."}
 
-  defp coprime?(a, m), do: gcd(a, m) == 1
-
-  defp coprime_error(a, m), do: if coprime?(a, m), do: nil, else: {:error, "a and m must be coprime."}
-
-  defp _decode(a_, b, encrypted) do
-    encrypted
+  defp _decode(a_, b, msg) do
+    msg
     |> String.replace(~r/[^a-z0-9]/, "")
     |> String.to_charlist()
     |> Enum.map_join(& decode_char(&1, a_, b))
   end
 
   defp decode_char(c, _, _) when c < ?a, do: <<c>>
-  defp decode_char(c, a_, b), do: << Integer.mod(a_ * ((c - ?a) - b), @m) + ?a >>
+  defp decode_char(c, a_, b), do: << Integer.mod(a_ * ((c - ?a) - b), 26) + ?a >>
 
-  defp _encode(a, b, message) do
-    message
+  defp _encode(a, b, msg) do
+    msg
     |> String.downcase()
     |> String.replace(~r/[^a-z0-9]/, "")
     |> String.to_charlist()
@@ -46,18 +40,15 @@ defmodule AffineCipher do
   end
 
   defp encode_char(c, _, _) when c < ?a, do: <<c>>
-  defp encode_char(c, a, b), do: << Integer.mod((a * (c - ?a) + b), @m) + ?a >>
-
-  defp gcd(x, 0), do: x
-  defp gcd(x, y), do: gcd(y, rem(x,y))
+  defp encode_char(c, a, b), do: << Integer.mod((a * (c - ?a) + b), 26) + ?a >>
 
   # Probably a smarter way to do this, but my maths suck
   defp mmi(a) do
-    Enum.reduce_while(2..max(a, @m), 1, fn a_, _ ->
-      case Integer.mod(a * a_, @m) do
+    Enum.reduce_while 2..max(a, 26), 1, fn a_, _ ->
+      case Integer.mod(a * a_, 26) do
         1 -> {:halt, a_}
         _ -> {:cont, 1}
       end
-    end)
+    end
   end
 end
