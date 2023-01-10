@@ -8,17 +8,15 @@ defmodule AffineCipher do
   @m 26
 
   @doc """
-  Encode an encrypted message using a key
-  E(x) = (ai + b) mod m
+  Encode an encrypted message using a key: E(x) = (ai + b) mod m
   """
-  @spec encode(key :: key(), message :: String.t()) :: {:ok, String.t()} | {:error, String.t()}
+  @spec encode(key :: key(), message :: String.t()) :: {:error, String.t()} | {:ok, String.t()}
   def encode(%{a: a, b: b}, msg), do: coprime_error(a, @m) || {:ok, _encode(a, b, msg)}
 
   @doc """
-  Decode an encrypted message using a key
-  D(y) = (a^-1)(y - b) mod m   ---  a^ = mmi(a)
+  Decode an encrypted message using a key: D(y) = (a^-1)(y - b) mod m where (a^-1) is the MMI of a, aka a_
   """
-  @spec decode(key :: key(), message :: String.t()) :: {:ok, String.t()} | {:error, String.t()}
+  @spec decode(key :: key(), message :: String.t()) :: {:error, String.t()} | {:ok, String.t()}
   def decode(%{a: a, b: b}, msg), do: coprime_error(a, @m) || {:ok, _decode(mmi(a), b, msg)}
 
 # Private
@@ -31,8 +29,7 @@ defmodule AffineCipher do
     encrypted
     |> String.replace(~r/[^a-z0-9]/, "")
     |> String.to_charlist()
-    |> Enum.map(& decode_char(&1, a_, b))
-    |> Enum.join()
+    |> Enum.map_join(& decode_char(&1, a_, b))
   end
 
   defp decode_char(c, _, _) when c < ?a, do: <<c>>
