@@ -7,7 +7,7 @@ defmodule Sieve do
   def primes_to(limit), do: sift(Enum.to_list(2..limit), [])
 
   defp sift([p | []], primes), do: Enum.reverse([p | primes])
-  defp sift([p | tail], primes), do: sift(filter_factors(p, tail), [p | primes])
+  defp sift([p | tail], primes), do: sift(filter_multiples(p, tail), [p | primes])
 
-  defp filter_factors(base, list), do: list -- Enum.to_list((base * 2)..List.last(list)//base)
+  defp filter_multiples(base, list), do: list -- Enum.to_list((base * 2)..List.last(list)//base)
 end
