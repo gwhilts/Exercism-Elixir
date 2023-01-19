@@ -1,32 +1,49 @@
-# Script - Sieve of Eratosthenes Walkthrough
+# Transcript - Sieve of Eratosthenes Walkthrough
 
 ## Problem
 
 - Exercism
-  - Go do it.
+  - For those who aren't familiar with Exercism, it's an awesome site 
+    that let's developers practice their skill by working through
+    coding exercises. They have "tracks" for dozens of different languages.
+    When you complete an exercise, the tool will give you some basic feedback
+    on your code. You can also publish it for others to review, and, optionally, 
+    comment on. For even more feedback you can request to have a mentor work with
+    you on your solution, or provide mentorship yourself.
+
 - Sieve of Eratosthenes
-  - Wikipedia
-  - Alorithm:
-    - Start with list of 2 to n
-    - Take number the first number, p (2 to start)
-    - Add it to list of primes
-    - Remove all multiples of p from the first list
-      (4, 6, 8, ...)
-    - take next remaining number, p2 (3)
-    - Add it to list of primes
-    - remove all remaining multples of p2  
-      (9, 15, 21, ...)
-    - take next remaining number, p3 (5)
-    ... keep repeating until first list is empty
+  - One of the exercises in the Elixir track, is to implement a prime number
+    generator using the "Sieve of Eratosthenes" algorithm. Looking through the users'
+    submission, I saw a lot of very inventive solutions. Most were 20 or 30 lines of 
+    code, some more than 60. My solution was 5 one-line funcions. 
 
-Sound like a perfect problem to solve with a little 
-tail recursion.
+    Shorter isn't always better. Sometimes a few extra lines of code are good if 
+    they provide clarity or flexibility. But when we're talking about a 5x or 10x
+    difference, with complicated logic, ... well maybe it's time for some condensing.
 
-First, we know we're going to need to remove all
-of a number from a list, so let's write a little 
-helper function to do that.
+    Let's walk through a short, simple solution to this exercise.
 
-We'll pop in to the REPL to flesh that out.
+  - The algorithm is published on Wikipedia, with nice animated gif that illustrates
+    our path.
+
+    - Alorithm:
+      - Start with list of 2 to n
+      - Take number the first number, p (2 to start)
+      - Add it to list of primes
+      - Remove all multiples of p from the first list
+        (4, 6, 8, ...)
+      - take next remaining number, p2 (3)
+      - Add it to list of primes
+      - remove all remaining multples of p2  
+        (9, 15, 21, ...)
+      - take next remaining number, p3 (5)
+      ... keep repeating until first list is empty
+
+Sounds like a perfect problem to solve with a little tail recursion.
+
+First, we know we're going to need to remove all of a number from a list, so let's write a little helper function to do that.
+
+We'll pop in to the REPL to flesh that out.<sup>1<sup>
 
 Elixir has a built in operator macro (--) to remove the 
 elements of one list from another.
@@ -34,21 +51,21 @@ elements of one list from another.
 So if we have a list of the numbers from 2 to 10
 
 ```elixir
-iex> l1 = Enum.to_list(2..10)
-[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+iex> list = Enum.to_list(2..10)
+[2, 3, 4, 5, 6, 7, 8, 9, 10]
 ```
 
 and another list of the multiples of 2 up to 10:
 
 ```elixir
-iex> l2 = Enum.to_list(4..10//2)
+iex> mults = Enum.to_list(2..10//2)
 [2, 4, 6, 8, 10]
 ```
 
 We can just say: 
 
 ```elixir
-iex> l1 -- l2
+iex> list -- mults
 [3, 5, 7, 9]
 ```
 
@@ -57,7 +74,7 @@ list and removes the multiples the base from the
 list:
 
 ```elixir
-def remove_multiples(base, list), do: list - Enum.to_list((base * 2)..List.last(list))
+def remove_multiples(base, list), do: list - Enum.to_list(base..List.last(list))
 ```
 
 
