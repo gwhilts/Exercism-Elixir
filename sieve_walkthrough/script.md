@@ -166,3 +166,59 @@ but it's short, simple, and I think pretty clear.
 
 Until next time.
 Happy coding.
+
+---
+
+Let's review the elements that made our solution short and simple:
+
+### Ranges
+
+A basic type representing a series of integers. Ranges can be written using the
+literal start..end: 
+
+```elixir
+2..10
+# 2, 3, 4, 5, 6, 7, 8, 9 10
+```
+
+By default the series increments by 1, but an optional "step" value can be 
+given to change the incremental value.
+
+```elixir
+iex> 2..10//2
+# 2, 4, 6, 8, 10
+```
+
+To cast a range into a list, we used the `Enum.to_list/1` function:
+
+```elixir
+iex> Enum.to_list(2..10//2)
+[2, 4, 6, 8, 10]
+```
+
+### The `--` Operator
+
+Next we used the `--` operator macro to remove the elements of one list
+from another:
+
+```elixir
+iex> [2, 3, 4, 5, 6, 7, 8, 9, 10] -- [2, 4, 6, 8, 10]
+[3, 5, 7, 9]
+```
+
+### Tail Call Recursion 
+
+Our next big tool was tail recursion. Tail recursion is simply when 
+the last expression in a function is to call itself. Sometimes using 
+recursion we can wind up a chain of nested call on the stack, putting
+some serious limitations on scale and performance. But when the recursive
+call is the very last thing to occur in the function, there's no need to 
+build up a stack. The compiler recognizes this and simply moves the pointer 
+back to the beginning of the function. Don't worry if this sounds complicated; 
+it's simple to implement. All it means is that when you do recursion, if a function
+makes a call back to itself as the very last step, you're good to go.
+
+Resources:
+
+- https://elixir-lang.org/getting-started/recursion.html
+- https://exercism.org/tracks/elixir/concepts/tail-call-recursion
