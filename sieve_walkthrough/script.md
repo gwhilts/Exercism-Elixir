@@ -2,46 +2,36 @@
 
 ## Problem
 
-- Exercism
-  - For those who aren't familiar with Exercism, it's an awesome site 
-    that let's developers practice their skill by working through
-    coding exercises. They have "tracks" for dozens of different languages.
-    When you complete an exercise, the tool will give you some basic feedback
-    on your code. You can also publish it for others to review, and, optionally, 
-    comment on. For even more feedback you can request to have a mentor work with
-    you on your solution, or provide mentorship yourself.
+Welcome.
 
-- Sieve of Eratosthenes
-  - One of the exercises in the Elixir track, is to implement a prime number
-    generator using the "Sieve of Eratosthenes" algorithm. Looking through the users'
-    submission, I saw a lot of very inventive solutions. Most were 20 or 30 lines of 
-    code, some more than 60. My solution was 5 one-line funcions. 
+Today we're going to look at writing some clean, simple code using Elixir.
 
-    Shorter isn't always better. Sometimes a few extra lines of code are good if 
-    they provide clarity or flexibility. But when we're talking about a 5x or 10x
-    difference, with complicated logic, ... well maybe it's time for some condensing.
+I was inspired to make this video by an exercise on the site Exercism. The task is to return a set up prime numbers up to a given limit, using the Sieve of Eratosthenes algorithm.
 
-    Let's walk through a short, simple solution to this exercise.
+The algorithm is published on Wikipedia, with nice animated gif that illustrates our path.
 
-  - The algorithm is published on Wikipedia, with nice animated gif that illustrates
-    our path.
-
-    - Alorithm:
-      - Start with list of 2 to n
-      - Take number the first number, p (2 to start)
-      - Add it to list of primes
-      - Remove all multiples of p from the first list
-        (4, 6, 8, ...)
-      - take next remaining number, p2 (3)
-      - Add it to list of primes
-      - remove all remaining multples of p2  
-        (9, 15, 21, ...)
-      - take next remaining number, p3 (5)
-      ... keep repeating until first list is empty
+- Alorithm:
+  - Start with list of natural numbers beginning with 2 (the first prime)
+  - Take number the first number, p (2 to start)
+  - Add it to list of primes
+  - Then remove all multiples of p from the first list
+    (4, 6, 8, ...)
+  - take next remaining number, p2 (3)
+  - Add it to list of primes
+  - remove all remaining multples of p2  
+    (9, 15, 21, ...)
+  - take next remaining number, p3 (5)
+  ... keep repeating until first list is empty
 
 Sounds like a perfect problem to solve with a little tail recursion.
 
-First, we know we're going to need to remove all of a number from a list, so let's write a little helper function to do that.
+For those who aren't familiar with Exercism, it's an awesome site  that let's developers practice their skill by working through coding exercises. They have  "tracks" for dozens of different languages.  When you complete an exercise, the tool will  give you some basic feedback on your code. You can also publish it for others to review,  and, optionally, comment on. For even more feedback you can request to have a mentor work  with you on your solution, or provide mentorship yourself.
+
+After completing this exercise I looked at the solutions that other had posted to the site. I saw a lot of very inventive solutions. Most were 20 or 30 lines of code, some more than  60. My solution was 5 one-line functions.  Shorter isn't always better. Sometimes a  few extra lines of code are good if they provide clarity or flexibility. But when we're  talking about a 5x or 10x difference, with complicated logic, ... well maybe it's time  for some condensing. Let's walk through a short, simple solution to this exercise.
+
+Let's get to the code.
+
+First, we know we're going to need to remove all the multiples of a base number from a list, so let's write a little helper function to do that.
 
 We'll pop in to the REPL to flesh that out.<sup>1<sup>
 
